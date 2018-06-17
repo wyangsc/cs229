@@ -102,7 +102,7 @@ $y|(x,\theta)\backsim D(x,\theta)$
 
 $f(y;(\eta,\kappa))=b(y)e^{\frac{ \eta^TT(y)-a(\eta)}{c(\kappa)}}$
 
-那么这个分布就叫作广义指数族分布。这个模型其实是对一般常见分布的一种泛华。
+那么这个分布就叫作广义指数族分布。这个模型其实是对一般常见分布的一种泛化。
 
 对于$y \backsim Bernoulli(n,\phi)=>P(m)=\binom n m  \phi^m(1-\phi)^{n-m}(m\in{0,1,2,...,n})$
 
@@ -170,7 +170,7 @@ $l(\tau)=\sum_{i=1}^{i=m}\ln d(y^i|(x^i;\tau)) =\sum_{i=1}^{i=m}\ln b(y^i)e^{\fr
 
 对于具体的一个样本而言$\frac{\part \frac{\eta^TT(y^i)-a(\eta)}{c(\kappa)}}{\part \eta}=\frac{T(y^i)-a'(\eta)}{c(\kappa)}=0=>T(y^i)=a'(\eta)=E(T(y^i))$
 
-$\frac{\part^2 \frac{\eta^TT(y^i)-a(\eta)}{c(\kappa)}}{\part \eta^2}\ge0$半正定，所以调整参数$\eta$使得$T(y)=E(T(y))=a'(\eta(x,\tau))$就是最大似然函数的最值情况。
+$\frac{\part^2 \frac{\eta^TT(y^i)-a(\eta)}{c(\kappa)}}{\part \eta^2}\ge0$半正定，所以调整参数$\eta$使得$T(y)=E(T(y))=a'(\eta(x,\tau))$就是最大似然函数的最佳情况。
 
 ####===>>>结论：对于选定的一个指数族分布只要保证对于任给的一个样本能够调整$\tau$使得$T(y)=E(T(y))=a'(\eta(x,\tau))$,就完成了理想化的最大似然估计。但是现实中可能样本数量过于巨大,而$\tau$可调整参数较少，使得上述等式不一定都能满足。
 
@@ -210,7 +210,7 @@ $1=\sum_{i=1}^{i=k}\phi_i=\phi_k\sum_{i=1}^{i=k}e^{\eta_i}=>\phi_k=\frac{1}{\sum
 
 $\phi_i=\frac{e^{\eta_i}}{\sum_{j=1}^{j=k}e^{\eta_j}}=\frac{e^{\theta_i^Tx}}{\sum_{j=1}^{j=k}e^{\theta_j^Tx}}$
 
-$l(\tau)=\sum_{i=1}^{i=m} \eta^T(x^i,\tau)T(y^i)=\sum_{i=1}^{i=m}(\theta_1^Tx^i,...,\theta_k^Tx^i)\cdot T(y)=\sum_{i=1}^{i=m}(\theta_j^Tx^i)^{y\in \Omega_j}=\sum_{i=1}^{i=m}(\frac{e^{\theta_j^Tx}}{\sum_{l=1}^{l=k}e^{\theta_l^Tx}})^{y\in \Omega_j}$
+$l(\tau)=\sum_{i=1}^{i=m} (\eta^T(x^i,\tau)T(y^i)+\phi_{k})=\sum_{i=1}^{i=m}((\theta_1^Tx^i,...,\theta_{k-1}^Tx^i)\cdot T(y)＋\ln(\phi_{k}))=\sum_{i=1}^{i=m}(\theta_j^Tx^i)^{y\in \Omega_j}=\sum_{i=1}^{i=m}(\frac{e^{\theta_j^Tx}}{\sum_{l=1}^{l=k}e^{\theta_l^Tx}})^{y\in \Omega_j}$
 
 再利用梯度上升算法。
 
