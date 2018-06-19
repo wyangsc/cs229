@@ -1,3 +1,7 @@
+
+
+
+
 ## 生成学习算法
 
 之前我们是对$p(y|(x,\tau))\backsim D(\tau(x))$ 进行建模。就是要预测$y$在不同类别上的概率分布，进而确定$y$的种类。
@@ -100,7 +104,21 @@ $p(x_1,x_2,....,x_n|y)=p(x_1|y)p(x_2|y,x_1)...p(x_n|y,x_1,x_2,...,x_{n-1})=p(x_1
 
 这样极大的简化了模型的建立和计算。但是对于高度相关的特征情况，这个模型不能使用。
 
-对于离散的特征情况，我们可以简化估计的模型，估计$\phi_i=p(y\in\Omega_i),\phi_{ij}=p(x_j|y\in\Omega_i)$,$l(\phi_i,\phi_{ij})=\sum_{i=1}^{i=m}\ln p(y^i)+\sum_{i=1}^{i=m}\ln p(x^i|y^i)=\sum_{i=1}^{i=m}\ln p(y^i)+\sum_{i=1}^{i=m}\sum_{j=1}^{j=n}\ln p(x_j^i|y^i) $
+对于离散的特征情况，我们可以简化估计的模型:多元$Bernoulli$分布，估计参数$\phi_i=p(y\in\Omega_i),\phi_{i}^{j}=p(x_j|y\in\Omega_i)$
+
+$p(y)=\prod_{i=1}^{i=m}\phi_i^{y\in\Omega_i}$
+
+$p(x|y\in\Omega_i)=\prod_{j=1}^{j=n}\phi_i^{j(x_j)}(1-\phi_i^{j})^{1-x_j}$
+
+最大似然函数:
+
+$l((\phi_i),(\phi_{i}^{j}))=\sum_{i=1}^{i=m}\ln p(y^i)+\sum_{i=1}^{i=m}\ln p(x^i|y^i)=\sum_{i=1}^{i=m}\ln p(y^i)+\sum_{i=1}^{i=m}\sum_{j=1}^{j=n}\ln p(x_j^i|y^i) $
+
+求导数解得:
+
+$\phi_i=\frac{|\Omega_i|}{|\Omega|}$。$|\cdot|$是取集合的基数
+
+$\phi_i^{j}=\frac{|\{x\in\Omega_i|x^{j}=1\}|}{|\Omega_i|}$
 
 显然$\phi_i$的估计和$GDA$是一致的，$\phi_{ij}$估计相类似。预测依旧选择贡献最大的分类。
 
@@ -117,6 +135,30 @@ $p(x_1,x_2,....,x_n|y)=p(x_1|y)p(x_2|y,x_1)...p(x_n|y,x_1,x_2,...,x_{n-1})=p(x_1
 ### 多项式事件模型
 
 想法：对于一个给定的字典，我们假设字典中的单词是一个多项式分布，在这个假设下使用$Naive\  Bayes$来进行最大似然参数估计。
+
+具体实现：我们以文本自身为关注对象，假设文本的生成是，在分类的基础上，满足多项式分布生成的（对不同的分类，单词的概率分布满足不同的多项式分布）。比如$\phi_i=p(x\in\Omega_i)$,在$\Omega_i$分类基础上，一封邮件中第一个单词出现的概率是$\Omega_i$对应下的多项式分布概率，按照朴素贝叶斯思想，我们假设第二个单词出现是在与第一个单词独立且同多项式分布的情况下产生。
+
+这个时候估计参数:
+
+$\phi_i=p(y\in\Omega_i),i=1,2,...,k$
+
+$\phi_{i,j}=p(x=j|y\in\Omega_i),j=1,...,n$,$n$我们选择字典的长度。
+
+最大似然函数：
+
+$l((\phi_i),(\phi_{i,j}))=\sum_{i=1}^{i=m}\ln p(y^i\and x^i)=\sum_{i=1}^{i=m}\ln p(y^i)+\sum_{i=1}^{i=m}\ln p(x^i|y^i)$,其中$p(x^i|y^i)$是一个多项式分布，展开比较繁琐。
+
+参数估计结果(同矩估计):
+
+$\phi_i=\frac{|\Omega_i|}{|\Omega|}$
+
+$\phi_{i,j}=\frac{sum(sum(x==j),x\in\Omega_i)}{n|\Omega_i|}$
+
+加入$laplace$平滑:
+
+$\phi_{i,j}=\frac{sum(sum(x==j),x\in\Omega_i)+1}{n|\Omega_i|+n}$
+
+
 
 ## 支持向量机
 
@@ -462,6 +504,20 @@ $=(\phi(x^1),\phi(x^2),...,\phi(x^m))^T(\phi(x^1),\phi(x^2),...,\phi(x^m))$
 
 核函数具有线性性，对函数乘法封闭，$\kappa(x,z)=g(x)\kappa_1(x,z)g(z)$
 
+$\kappa(x,z)=k_1(x,z)k_2(x,z)$
+
+证明$\kappa$是一个核函数。
+
+ $K=\left( \begin{array}{ccccc} \kappa(x^1,x^1) &  \kappa(x^1,x^2)&  \kappa(x^1,x^3)& \cdots  &\kappa(x^1,x^m) \newline \kappa(x^2,x^1) & \kappa(x^2,x^2) &\kappa(x^2,x^3)& \cdots & \kappa(x^2,x^m) \newline \vdots & \vdots &   \vdots &\ddots & \vdots \newline \kappa(x^m,x^1) & \kappa(x^m,x^2) & \kappa(x^m,x^3) &\cdots &\kappa(x^m,x^m) \end{array}\right)$
+
+ $K=\left( \begin{array}{ccccc} \kappa_1(x^1,x^1) \kappa_2(x^1,x^1) &  \kappa_1(x^1,x^2)\kappa_2(x^1,x^2)&  \kappa_1(x^1,x^3)\kappa_2(x^1,x^3)& \cdots  &\kappa_1(x^1,x^m)\kappa_2(x^1,x^m) \newline \kappa_1(x^2,x^1)  \kappa_2(x^2,x^1) & \kappa_1(x^2,x^2)\kappa_2(x^2,x^2) &\kappa_1(x^2,x^3) \kappa_2(x^2,x^3)& \cdots & \kappa_1(x^2,x^m)\kappa_2(x^2,x^m)\newline \vdots & \vdots &   \vdots &\ddots & \vdots \newline \kappa_1(x^m,x^1) \kappa_2(x^m,x^1)& \kappa_1(x^m,x^2) \kappa_2(x^m,x^2)  & \kappa_1(x^m,x^3) \kappa_2(x^m,x^3)&\cdots &\kappa_1(x^m,x^m)\kappa_2(x^m,x^m) \end{array}\right)$
+
+上面的命题等价于证明$K=K_1\cdot K_2$(对应积)是半正定的。由$schur$定理得证。
+
+
+
+
+
 ### 4 正则化(解决非线性可分的另一种方法)
 
 为了应对个别噪声(过拟合问题)的影响：
@@ -482,7 +538,7 @@ $$L(w,b,\varepsilon,\alpha,r)=\frac{1}{2}||w||^2+C\sum_{i=1}^{i=m}\varepsilon_i+
 
 $\Theta_D(\alpha)=\sum_{i=1}^{i=m}\alpha_i-\frac{1}{2}\sum_{i,j=1}^{m}c(y^i)c(y^j)\alpha_i\alpha_j<x^i,x^j>$
 
-$C \succeq\alpha \succeq 0,\sum_{i=1}^{i=m}\alpha_ic(y^i)=0$
+$C \succeq\alpha \succeq 0,\sum_{i=1}^{i=m}\alpha_ic(y^i)=0​$
 
 $w^{*T}x+b=\sum_{i=1}^{i=m}\alpha_i^*c(y^i)<x^i,x>+b$
 
