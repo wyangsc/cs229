@@ -152,11 +152,19 @@ $l((\phi_i),(\phi_{i,j}))=\sum_{i=1}^{i=m}\ln p(y^i\and x^i)=\sum_{i=1}^{i=m}\ln
 
 $\phi_i=\frac{|\Omega_i|}{|\Omega|}$
 
-$\phi_{i,j}=\frac{sum(sum(x==j),x\in\Omega_i)}{n|\Omega_i|}$
+$\phi_{i,j}=\frac{sum(sum(x==j),x\in\Omega_i)}{sum(len(x),x\in\Omega_i)}$
 
 加入$laplace$平滑:
 
-$\phi_{i,j}=\frac{sum(sum(x==j),x\in\Omega_i)+1}{n|\Omega_i|+n}$
+$\phi_{i,j}=\frac{sum(sum(x==j),x\in\Omega_i)+1}{sum(len(x),x\in\Omega_i)+n}$
+
+在预测时:
+
+$p(y\in\Omega_i|x)=\frac{p(x|y\in\Omega_i)p(y\in\Omega_i)}{\sum_{i=1}^{i=k}p(y\in\Omega_i)p(x|y\in\Omega_i)}$
+
+$p(x|y\in\Omega_i)=\prod_{j=1}^{j=len(x)}p(x_j|y\in\Omega)$
+
+
 
 
 

@@ -1,7 +1,10 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % svm_test.m
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+[spmatrix, tokenlist, category] = readMatrix('MATRIX.TEST');
+Xtest=full(spmatrix);
+ytest=category.';
+ytest(ytest==0)=-1;
 % Construct test and train matrices
 Xtest = 1.0 * (Xtest > 0);
 squared_X_test = sum(Xtest.^2, 2);

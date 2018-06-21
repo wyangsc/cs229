@@ -3,7 +3,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 [sparseTrainMatrix, tokenlist, trainCategory] = ...
-    readMatrix(sprintf('MATRIX.TRAIN.%d', num_train));
+    readMatrix(sprintf('MATRIX.TRAIN.%d', 800));
 Xtrain = full(sparseTrainMatrix);
 m_train = size(Xtrain, 1);
 ytrain = (2 * trainCategory - 1)';
